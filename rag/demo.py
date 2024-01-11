@@ -30,16 +30,19 @@ sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 # qianfan
 os.environ["QIANFAN_AK"] = os.getenv("QIANFAN_AK")
 os.environ["QIANFAN_SK"] = os.getenv("QIANFAN_SK")
-# split 
-chunk_size=100
-chunk_overlap=20
+# split  
+chunk_size=50
+chunk_overlap=10
 
 
-def load(path: str)-> List[Document]:
+def load(paths: List[str])-> List[Document]:
     # Only keep post title, headers, and content from the full HTML.
-    with open(path, "r", encoding="utf-8") as f:
-        html = f.read()
-    return Document(page_content=html, metadata={"source": path})
+    docs = []
+    for path in paths:
+        with open(path, "r", encoding="utf-8") as f:
+            html = f.read()
+            docs.append( Document(page_content=html, metadata={"source": path}))
+    return docs
 
 
 def split(docs: Sequence[Document]) ->  List[Document]:
@@ -70,7 +73,9 @@ def retriever(vectorstore: VectorStore, query: str) ->  Document:
 
 def generator( url: str, query: str) ->  Document:    
     def format_docs(docs):
-        return "\n\n".join(doc.page_content for doc in docs)
+        rst = "\n\n".join(doc.page_content for doc in docs)
+        print("[retriever]", rst)
+        return rst
     prompt = hub.pull("rlm/rag-prompt")
     llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0)
     docs = split(load(url))
@@ -84,7 +89,7 @@ def generator( url: str, query: str) ->  Document:
         | StrOutputParser()
     )
     rst = rag_chain.invoke(query)
-    print(rst)
+    return rst 
 
 
 
