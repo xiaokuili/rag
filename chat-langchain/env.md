@@ -1,4 +1,4 @@
-export OPENAI_API_KEY=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
+export OPENAI_API_KEY=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
 export WEAVIATE_URL=https://my-test-t111r3yd.weaviate.network
 export WEAVIATE_API_KEY=XDq1EPNJNYJdbCnI2gdaSbnYmLWJ4ERWOEVF
 export RECORD_MANAGER_DB_URL=sqlite:///record_manager.sql
