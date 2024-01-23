@@ -3,7 +3,7 @@ import logging
 import os
 import re
 from parser import langchain_docs_extractor
-
+from sqlalchemyloader import SQLAlchemyLoader
 import weaviate
 from bs4 import BeautifulSoup, SoupStrainer
 from langchain.document_loaders import RecursiveUrlLoader, SitemapLoader
@@ -37,6 +37,13 @@ def metadata_extractor(meta: dict, soup: BeautifulSoup) -> dict:
         **meta,
     }
 
+
+def load_db_news_docs():
+    return SQLAlchemyLoader(
+        url = "postgresql://postgres:mysecretpassword@47.115.205.28:5432/postgres",
+        query = "SELECT headline AS title, content, publish_site_name AS source, summary AS description, 'chi' AS language, '' AS loc, '0.5d' AS changefreq, '1' AS priority FROM ads_market_insight ami LIMIT 100;",
+        metadata_columns=["source", "title", "description", "language", "loc", "changefreq", "priority"],
+    ).load()
 
 def load_langchain_docs():
     return SitemapLoader(
@@ -97,7 +104,7 @@ def load_api_docs():
 
 
 def ingest_docs():
-    docs_from_documentation = load_langchain_docs()
+    docs_from_documentation = load_db_news_docs()
     logger.info(f"Loaded {len(docs_from_documentation)} docs from documentation")
     # docs_from_api = load_api_docs()
     # logger.info(f"Loaded {len(docs_from_api)} docs from API")
