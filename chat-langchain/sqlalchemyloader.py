@@ -114,8 +114,8 @@ class SQLAlchemyLoader(BaseLoader):
 if __name__ == "__main__":
    
     loader = SQLAlchemyLoader(
-        url = "postgresql://brain_saas:bjbsHt2oY)l2V40j@192.168.200.69:5432/brain_saas",
-        query = "SELECT headline AS title, content, publish_site_name AS source, summary AS description, 'chi' AS language, '' AS loc, '0.5d' AS changefreq, '1' AS priority FROM ads.ads_market_insight ami LIMIT 100;",
+        url = "postgresql://postgres:mysecretpassword@47.115.205.28:5432/postgres",
+        query = "SELECT headline AS title, content, publish_site_name AS source, summary AS description, 'chi' AS language, '' AS loc, '0.5d' AS changefreq, '1' AS priority FROM ads_market_insight ami LIMIT 100;",
     )
     docs = loader.load()
     print(docs)
